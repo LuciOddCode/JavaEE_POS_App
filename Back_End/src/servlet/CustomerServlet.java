@@ -190,4 +190,11 @@ public class CustomerServlet extends HttpServlet {
             resp.getWriter().print(response.build());
         }
     }
+
+    @Override
+    protected void doOptions(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.addHeader("Access-Control-Allow-Origin", "*");
+        resp.addHeader("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
+        resp.addHeader("Access-Control-Allow-Headers", "Content-Type");
+    }
 }
