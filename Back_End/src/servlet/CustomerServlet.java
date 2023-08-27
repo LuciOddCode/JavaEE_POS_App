@@ -18,6 +18,30 @@ public class CustomerServlet extends HttpServlet {
         try {
             Class.forName("com.mysql.jdbc.Driver");
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/web_pos", "root", "1234");
+
+            //check if the request is for a specific customer
+            String cusID = req.getParameter("cusID");
+            if (cusID != null) {
+                PreparedStatement pstm = connection.prepareStatement("select * from customer where cus_id=?");
+                pstm.setObject(1, cusID);
+                ResultSet rst = pstm.executeQuery();
+
+                if (rst.next()) {
+                    String id = rst.getString(1);
+                    String name = rst.getString(2);
+                    String address = rst.getString(3);
+
+                    JsonObjectBuilder customerObject = Json.createObjectBuilder();
+                    customerObject.add("id", id);
+                    customerObject.add("name", name);
+                    customerObject.add("address", address);
+
+                    resp.getWriter().print(customerObject.build());
+                } else {
+                    resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+                }
+                return;
+            }
             PreparedStatement pstm = connection.prepareStatement("select * from customer");
             ResultSet rst = pstm.executeQuery();
 
