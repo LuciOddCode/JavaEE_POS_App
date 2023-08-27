@@ -1,0 +1,17 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="Back_End:Web exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/Back_End_Web_exploded</output-path>
+    <root id="root">
+      <element id="javaee-facet-resources" facet="Back_End/web/Web" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="Back_End" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="javax.annotation" />
+          <element id="library" level="project" name="javax.json-1.1.4" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>
