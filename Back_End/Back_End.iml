@@ -22,5 +22,6 @@
     <orderEntry type="library" name="javax.json-1.1.4" level="project" />
     <orderEntry type="library" name="javax.annotation" level="project" />
     <orderEntry type="library" name="jquery" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="Tomcat 8.5.92" level="application_server_libraries" />
   </component>
 </module>
