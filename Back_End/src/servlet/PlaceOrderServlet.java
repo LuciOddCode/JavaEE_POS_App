@@ -52,7 +52,12 @@ public class PlaceOrderServlet extends HttpServlet {
         String order_id = req.getParameter("order_id");
         String cusID = req.getParameter("cusID");
         String total = req.getParameter("total");
+
+        String code = req.getParameter("code");
+        String qty = req.getParameter("qty");
+        String price = req.getParameter("price");
         String date = req.getParameter("date");
+
         System.out.println(order_id + cusID + total + date);
 
         try {
@@ -68,9 +73,42 @@ public class PlaceOrderServlet extends HttpServlet {
             resp.addHeader("Content-Type", "application/json");
 
             if (pstm.executeUpdate() > 0) {
+
+                PreparedStatement pstm1 = connection.prepareStatement("insert into order_detail values(?,?,?,?)");
+                pstm1.setObject(1, order_id);
+                pstm1.setObject(2, code);
+                pstm1.setObject(3, qty);
+                pstm1.setObject(4, price);
+
+                if (pstm1.executeUpdate() > 0) {
+                    PreparedStatement pstm2 = connection.prepareStatement("update item set qty=qty-? where item_code=?");
+                    pstm2.setObject(1, qty);
+                    pstm2.setObject(2, code);
+                    if (pstm2.executeUpdate() > 0) {
+                        JsonObjectBuilder response = Json.createObjectBuilder();
+                        response.add("state", "Ok");
+                        response.add("message", "Successfully Added.!");
+                        response.add("data", "");
+                        resp.getWriter().print(response.build());
+                    }else {
+                        JsonObjectBuilder response = Json.createObjectBuilder();
+                        response.add("state", "Error");
+                        response.add("message", "Error.!");
+                        response.add("data", "");
+                        resp.getWriter().print(response.build());
+                    }
+
+                }else {
+                    JsonObjectBuilder response = Json.createObjectBuilder();
+                    response.add("state", "Error");
+                    response.add("message", "Error.!");
+                    response.add("data", "");
+                    resp.getWriter().print(response.build());
+                }
+            }else {
                 JsonObjectBuilder response = Json.createObjectBuilder();
-                response.add("state", "Ok");
-                response.add("message", "Successfully Added.!");
+                response.add("state", "Error");
+                response.add("message", "Error.!");
                 response.add("data", "");
                 resp.getWriter().print(response.build());
             }
