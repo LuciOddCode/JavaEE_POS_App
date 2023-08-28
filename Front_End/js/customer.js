@@ -12,7 +12,6 @@ function getAllCustomers() {
     $.ajax({
         url: 'http://localhost:8080/Back_End_Web_exploded/customer?option=getAll',
         method: "get",
-        dataType: "application/json",
         success: function (customers) {
 
             let cus = JSON.parse(customers);
@@ -25,7 +24,7 @@ function getAllCustomers() {
             }
         },
         error: function (error) {
-            console.log(error);
+            alert(error);
         }
     });
 }
@@ -38,7 +37,6 @@ $("#btnCustomer").click(function () {
         method: "post",
         data: formdata,
         success: function (res) {
-            console.log(res);
             alert(res.message);
             getAllCustomers();
         },
@@ -47,6 +45,7 @@ $("#btnCustomer").click(function () {
             alert(error.responseJSON.message);
         }
     });
+
 
 });
 

@@ -63,7 +63,7 @@ public class PlaceOrderServletAPI extends HttpServlet {
         try {
             Class.forName("com.mysql.jdbc.Driver");
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/web_pos", "root", "1234");
-
+            connection.setAutoCommit(false);
             //Add an order
             PreparedStatement pstm = connection.prepareStatement("insert into orders values(?,?,?,?)");
             pstm.setObject(1, order_id);
@@ -89,6 +89,7 @@ public class PlaceOrderServletAPI extends HttpServlet {
                         response.add("state", "Ok");
                         response.add("message", "Successfully Added.!");
                         response.add("data", "");
+                        connection.commit();
                         resp.getWriter().print(response.build());
                     }else {
                         JsonObjectBuilder response = Json.createObjectBuilder();
@@ -96,6 +97,7 @@ public class PlaceOrderServletAPI extends HttpServlet {
                         response.add("message", "Error.!");
                         response.add("data", "");
                         resp.getWriter().print(response.build());
+                        connection.rollback();
                     }
 
                 }else {
@@ -104,6 +106,8 @@ public class PlaceOrderServletAPI extends HttpServlet {
                     response.add("message", "Error.!");
                     response.add("data", "");
                     resp.getWriter().print(response.build());
+                    connection.rollback();
+
                 }
             }else {
                 JsonObjectBuilder response = Json.createObjectBuilder();
@@ -111,6 +115,8 @@ public class PlaceOrderServletAPI extends HttpServlet {
                 response.add("message", "Error.!");
                 response.add("data", "");
                 resp.getWriter().print(response.build());
+                connection.rollback();
+                
             }
 
 
