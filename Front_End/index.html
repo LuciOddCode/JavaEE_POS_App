@@ -486,9 +486,9 @@ function getAllCustomers() {
     $("#tblCustomer").empty();
     <!--send ajax request to the customer servlet using jQuery-->
     $.ajax({
-        url: 'http://localhost:8080/Back_End_Web_exploded/customer',
+        url: 'http://localhost:8080/Back_End_Web_exploded/customer?option=getAll',
         method: "get",
-        dataType: "json",
+        /*dataType: "formdata",*/
         success: function (customers) {
             for (let i in customers) {
                 let cus = customers[i];
@@ -585,7 +585,7 @@ $("#btnGetAllItem").click(function () {
 function getAllItems() {
     $("#tblItem").empty();
     $.ajax({
-        url: 'item',
+        url: 'http://localhost:8080/Back_End_Web_exploded/item',
         dataType: "json",
         success: function (items) {
             for (let i in items) {
@@ -608,7 +608,7 @@ $("#btnItem").click(function () {
 
     let formdata = $("#itemForm").serialize();
     $.ajax({
-        url: "item",
+        url: "http://localhost:8080/Back_End_Web_exploded/item",
         method: "post",
         data: formdata,
         success: function (res) {
@@ -627,7 +627,7 @@ $("#btnItem").click(function () {
 $("#btnItemDelete").click(function () {
     let formData = $("#txtItemCode").val();
     $.ajax({
-        url: "item?code=" + formData,
+        url: "http://localhost:8080/Back_End_Web_exploded/item?code=" + formData,
         method: 'DELETE',
         success: function (resp) {
             console.log(resp);
@@ -657,7 +657,7 @@ let click = $("#btnItemUpdate").click(function () {
 
 
     $.ajax({
-        url: 'item',
+        url: 'http://localhost:8080/Back_End_Web_exploded/item',
         method: 'put',
         data: JSON.stringify(item),
         contentType: 'application/json',
@@ -683,7 +683,7 @@ loadAllCustomers();
 loadAllItems();
 function loadAllCustomers() {
     $.ajax({
-        url: 'customer',
+        url: 'http://localhost:8080/Back_End_Web_exploded/customer?option=getAll',
         method: 'get',
         dataType: 'json',
         success: function (customers) {
@@ -699,7 +699,7 @@ function loadAllCustomers() {
 //load all items into combo box
 function loadAllItems() {
     $.ajax({
-        url: 'item',
+        url: 'http://localhost:8080/Back_End_Web_exploded/item',
         method: 'get',
         dataType: 'json',
         success: function (items) {
@@ -717,9 +717,9 @@ function loadAllItems() {
 $("#selectCusID").change(function () {
     let cusID = $("#selectCusID").val();
     $.ajax({
-        url: 'http://localhost:8080/Back_End_Web_exploded/customer?cusID=' + cusID,
+        url: 'http://localhost:8080/Back_End_Web_exploded/customer?option=getID?cusID=' + cusID,
         method: 'get',
-        dataType: 'json',
+        dataType: 'formdata',
         success: function (customer) {
             $("#orderCustomerID").val(customer.id);
             $("#orderCustomerName").val(customer.name);
@@ -815,7 +815,7 @@ $("#btnSubmitOrder").click(function () {
     };
 
     $.ajax({
-        url: 'order',
+        url: 'http://localhost:8080/Back_End_Web_exploded/order',
         method: 'post',
         data: JSON.stringify(order),
         contentType: 'application/json',

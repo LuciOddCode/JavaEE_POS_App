@@ -10,55 +10,64 @@ import java.io.IOException;
 import java.sql.*;
 
 
-@WebServlet(urlPatterns = {"/pages/customer"})
+@WebServlet(urlPatterns = {"/customer"})
 public class CustomerServletAPI extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.addHeader("Access-Control-Allow-Origin","*");
         try {
             Class.forName("com.mysql.jdbc.Driver");
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/web_pos", "root", "1234");
 
             //check if the request is for a specific customer
-            String cusID = req.getParameter("cusID");
-            if (cusID != null) {
-                PreparedStatement pstm = connection.prepareStatement("select * from customer where cus_id=?");
-                pstm.setObject(1, cusID);
-                ResultSet rst = pstm.executeQuery();
 
-                if (rst.next()) {
-                    String id = rst.getString(1);
-                    String name = rst.getString(2);
-                    String address = rst.getString(3);
+            String option = req.getParameter("option");
 
-                    JsonObjectBuilder customerObject = Json.createObjectBuilder();
-                    customerObject.add("id", id);
-                    customerObject.add("name", name);
-                    customerObject.add("address", address);
+            switch (option) {
+                case "getID":
+                    String cusID = req.getParameter("cusID");
 
-                    resp.getWriter().print(customerObject.build());
-                } else {
-                    resp.sendError(HttpServletResponse.SC_NOT_FOUND);
-                }
-                return;
+                    PreparedStatement pstm = connection.prepareStatement("select * from customer where cus_id=?");
+                    pstm.setObject(1, cusID);
+                    ResultSet rst = pstm.executeQuery();
+
+                    if (rst.next()) {
+                        String id = rst.getString(1);
+                        String name = rst.getString(2);
+                        String address = rst.getString(3);
+
+                        JsonObjectBuilder customerObject = Json.createObjectBuilder();
+                        customerObject.add("id", id);
+                        customerObject.add("name", name);
+                        customerObject.add("address", address);
+
+                        resp.getWriter().print(customerObject.build());
+
+
+                    }
+                    break;
+                case "getAll":
+                    PreparedStatement pstm1 = connection.prepareStatement("select * from customer");
+                    ResultSet rst1 = pstm1.executeQuery();
+
+                    JsonArrayBuilder allCustomers = Json.createArrayBuilder();
+                    while (rst1.next()) {
+                        String id = rst1.getString(1);
+                        String name = rst1.getString(2);
+                        String address = rst1.getString(3);
+
+                        JsonObjectBuilder customerObject = Json.createObjectBuilder();
+                        customerObject.add("id", id);
+                        customerObject.add("name", name);
+                        customerObject.add("address", address);
+                        allCustomers.add(customerObject.build());
+                    }
+
+                    resp.getWriter().print(allCustomers.build());
             }
-            PreparedStatement pstm = connection.prepareStatement("select * from customer");
-            ResultSet rst = pstm.executeQuery();
 
-            JsonArrayBuilder allCustomers = Json.createArrayBuilder();
-            while (rst.next()) {
-                String id = rst.getString(1);
-                String name = rst.getString(2);
-                String address = rst.getString(3);
 
-                JsonObjectBuilder customerObject = Json.createObjectBuilder();
-                customerObject.add("id", id);
-                customerObject.add("name", name);
-                customerObject.add("address", address);
-                allCustomers.add(customerObject.build());
-            }
-
-            resp.getWriter().print(allCustomers.build());
 
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
@@ -70,6 +79,7 @@ public class CustomerServletAPI extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.addHeader("Access-Control-Allow-Origin","*");
 
 
         String cusID = req.getParameter("cusID");
@@ -125,6 +135,8 @@ public class CustomerServletAPI extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.addHeader("Content-Type", "application/json");
+        resp.addHeader("Access-Control-Allow-Origin","*");
+
 
         JsonReader reader = Json.createReader(req.getReader());
         JsonObject jsonObject = reader.readObject();
@@ -187,6 +199,8 @@ public class CustomerServletAPI extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.addHeader("Access-Control-Allow-Origin","*");
+
         String cusID = req.getParameter("cusID");
         resp.addHeader("Content-Type", "application/json");
         System.out.println(cusID);

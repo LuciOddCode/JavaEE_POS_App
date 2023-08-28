@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.sql.*;
 
 
-@WebServlet(urlPatterns = {"/pages/placeOrder"})
+@WebServlet(urlPatterns = {"/placeOrder"})
 public class PlaceOrderServletAPI extends HttpServlet {
 
     @Override
