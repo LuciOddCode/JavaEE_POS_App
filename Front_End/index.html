@@ -15,6 +15,7 @@
     </style>
 
 
+
 </head>
 <body>
 <!--header-->
@@ -87,23 +88,18 @@
 <form id="customerForm">
     <div class="form-group">
         <label for="txtCustomerID">Customer ID</label>
-        <input class="form-control" id="txtCustomerID" required type="text">
+        <input name="cus_id" class="form-control" id="txtCustomerID" required type="text">
         <span class="control-error" id="lblcusid"></span>
     </div>
     <div class="form-group">
         <label for="txtCustomerName">Customer Name</label>
-        <input class="form-control" id="txtCustomerName" type="text">
+        <input name="cus_name" class="form-control" id="txtCustomerName" type="text">
         <span class="control-error" id="lblcusname"></span>
     </div>
     <div class="form-group">
         <label for="txtCustomerAddress">Customer Address</label>
-        <input class="form-control" id="txtCustomerAddress" type="text">
+        <input name="cus_address" class="form-control" id="txtCustomerAddress" type="text">
         <span class="control-error" id="lblcusaddress"></span>
-    </div>
-    <div class="form-group">
-        <label for="txtCustomerSalary">Customer Salary</label>
-        <input class="form-control" id="txtCustomerSalary" type="text">
-        <span class="control-error" id="lblcussalary"></span>
     </div>
     <div class="btn-group">
         <button type="button" class="btn btn-primary" id="btnCustomer">Save Customer</button>
@@ -122,7 +118,6 @@
                     <th>Customer ID</th>
                     <th>Customer Name</th>
                     <th>Customer Address</th>
-                    <th>Customer Salary</th>
                 </tr>
                 </thead>
                 <tbody id="tblCustomer">
@@ -389,9 +384,13 @@
     </div>
 </main>
 
+<script src="js/vendor/code.jquery.com_jquery-3.7.0.min.js"></script>
+<!--<script src="js/vendor/bootstrap.min.js"></script>-->
 
-<script src="js/vendor/jquery-1.10.2.min.js"></script>
-<script src="js/vendor/bootstrap.min.js"></script>
+<script src="js/item.js"></script>
+<script src="js/customer.js"></script>
+
+<script src="js/placeOrder.js"></script>
 <script>
     //logics for SPA
     initiateUI();
@@ -472,382 +471,6 @@
     //end of logics for SPA
 
 </script>
-
-
-<script>
-//customer
-getAllCustomers();
-
-$("#btnGetAll").click(function () {
-    getAllCustomers();
-});
-
-function getAllCustomers() {
-    $("#tblCustomer").empty();
-    <!--send ajax request to the customer servlet using jQuery-->
-    $.ajax({
-        url: 'http://localhost:8080/Back_End_Web_exploded/customer?option=getAll',
-        method: "get",
-        /*dataType: "formdata",*/
-        success: function (customers) {
-
-            let cus = JSON.parse(customers);
-            for (let i=0;i<cus.length;i++) {
-                let id = cus[i].id;
-                let name = cus[i].name;
-                let address = cus[i].address;
-                let row = `<tr><td>${id}</td><td>${name}</td><td>${address}</td></tr>`;
-                $("#tblCustomer").append(row);
-            }
-        },
-        error: function (error) {
-            console.log(error);
-        }
-    });
-}
-
-$("#btnCustomer").click(function () {
-
-    let formdata = $("#customerForm").serialize();
-    $.ajax({
-        url: "http://localhost:8080/Back_End_Web_exploded/customer",
-        method: "post",
-        data: formdata,
-        success: function (res) {
-            console.log(res);
-            alert(res.message);
-            getAllCustomers();
-        },
-        error: function (error) {
-            console.log(error.responseJSON);
-            alert(error.responseJSON.message);
-        }
-    });
-
-});
-
-$("#btnCusDelete").click(function () {
-    let formData = $("#txtCustomerID").val();
-    $.ajax({
-        url: "http://localhost:8080/Back_End_Web_exploded/customer?cusID=" + formData,
-        method: 'DELETE',
-        success: function (resp) {
-            console.log(resp);
-            alert(resp.message);
-            getAllCustomers();
-        },
-        error: function (error) {
-            console.log(error.responseJSON);
-            alert(error.responseJSON.message);
-        }
-    });
-});
-
-let click = $("#btnUpdate").click(function () {
-    /*   let customer = "{\"cusID\":\"" + $("#txtCustomerID").val() + "\",\"cusName\":\"" + $("#txtCustomerName").val()
-           + "\",\"cusAddress\":\"" + $("#txtCustomerAddress").val() + "\"} ";*/
-    let cusId = $("#txtCustomerID").val();
-    let cusName = $("#txtCustomerName").val();
-    let cusAddress = $("#txtCustomerAddress").val();
-
-    let customer = {
-        cusID: cusId ,
-        cusName: cusName,
-        cusAddress: cusAddress
-    }
-
-
-    $.ajax({
-        url: 'http://localhost:8080/Back_End_Web_exploded/customer',
-        method: 'put',
-        data: JSON.stringify(customer),
-        contentType: 'application/json',
-        success: function (resp) {
-            console.log(resp);
-            alert(resp.message);
-            getAllCustomers();
-        },
-        error: function (error) {
-            console.log(error.responseJSON);
-            alert(error.responseJSON.message);
-        }
-    });
-});
-</script>
-
-<script>
-//item
-getAllItems();
-
-$("#btnGetAllItem").click(function () {
-    getAllItems();
-});
-
-function getAllItems() {
-    $("#tblItem").empty();
-    $.ajax({
-        url: 'http://localhost:8080/Back_End_Web_exploded/item',
-        success: function (items) {
-            for (let i in items) {
-                let item = items[i];
-                let code = item.itemCode;
-                let description = item.description;
-                let unit_price = item.unitPrice;
-                let qty = item.qty;
-                let row = `<tr><td>${code}</td><td>${description}</td><td>${unit_price}</td><td>${qty}</td></tr>`;
-                $("#tblItem").append(row);
-            }
-        },
-        error: function (error) {
-            console.log(error);
-        }
-    });
-}
-
-$("#btnItem").click(function () {
-
-    let formdata = $("#itemForm").serialize();
-    $.ajax({
-        url: "http://localhost:8080/Back_End_Web_exploded/item",
-        method: "post",
-        data: formdata,
-        success: function (res) {
-            console.log(res);
-            alert(res.message);
-            getAllCustomers();
-        },
-        error: function (error) {
-            console.log(error.responseJSON);
-            alert(error.responseJSON.message);
-        }
-    });
-
-});
-
-$("#btnItemDelete").click(function () {
-    let formData = $("#txtItemCode").val();
-    $.ajax({
-        url: "http://localhost:8080/Back_End_Web_exploded/item?code=" + formData,
-        method: 'DELETE',
-        success: function (resp) {
-            console.log(resp);
-            alert(resp.message);
-            getAllCustomers();
-        },
-        error: function (error) {
-            console.log(error.responseJSON);
-            alert(error.responseJSON.message);
-        }
-    });
-});
-
-let click = $("#btnItemUpdate").click(function () {
-
-    let code = $("itemCode").val();
-    let description = $("#itemName").val();
-    let unitPrice = $("#itemPrice").val();
-    let qty = $("#itemQty").val();
-
-    let item = {
-        itemCode: code ,
-        description: description,
-        unitPrice: unitPrice,
-        qty: qty,
-    }
-
-
-    $.ajax({
-        url: 'http://localhost:8080/Back_End_Web_exploded/item',
-        method: 'put',
-        data: JSON.stringify(item),
-        contentType: 'application/json',
-        success: function (resp) {
-            console.log(resp);
-            alert(resp.message);
-            getAllCustomers();
-        },
-        error: function (error) {
-            console.log(error.responseJSON);
-            alert(error.responseJSON.message);
-        }
-    });
-});
-</script>
-
-<script>
-//order
-
-
-//load all customers into combo box
-loadAllCustomers();
-loadAllItems();
-function loadAllCustomers() {
-    $.ajax({
-        url: 'http://localhost:8080/Back_End_Web_exploded/customer?option=getAll',
-        method: 'get',
-        dataType: 'json',
-        success: function (customers) {
-            for (let i in customers) {
-                let id = customers[i].id;
-                let name = customers[i].name;
-                $("#selectCusID").append(`<option value="${id}"</option>`);
-            }
-        }
-    });
-}
-
-//load all items into combo box
-function loadAllItems() {
-    $.ajax({
-        url: 'http://localhost:8080/Back_End_Web_exploded/item',
-        method: 'get',
-        dataType: 'json',
-        success: function (items) {
-            for (let i in items) {
-                let code = items[i].code;
-                let description = items[i].description;
-                $("#selectItemCode").append(`<option value="${code}"</option>`);
-
-            }
-        }
-    });
-}
-
-//load customer details when customer id is selected
-$("#selectCusID").change(function () {
-    let cusID = $("#selectCusID").val();
-    $.ajax({
-        url: 'http://localhost:8080/Back_End_Web_exploded/customer?option=getID?cusID=' + cusID,
-        method: 'get',
-        dataType: 'formdata',
-        success: function (customer) {
-            $("#orderCustomerID").val(customer.id);
-            $("#orderCustomerName").val(customer.name);
-            $("#orderCustomerAddress").val(customer.address);
-        }
-    });
-});
-
-//load item details when item code is selected
-$("#selectItemCode").change(function () {
-    let itemCode = $("#selectItemCode").val();
-    $.ajax({
-        url: 'http://localhost:8080/Back_End_Web_exploded/item?code=' + itemCode,
-        method: 'get',
-        dataType: 'json',
-        success: function (item) {
-            $("#txtItemCode").val(item.code);
-            $("#txtItemDescription").val(item.description);
-            $("#txtItemPrice").val(item.unit_price);
-            $("#txtQTYOnHand").val(item.qty);
-        }
-    });
-});
-
-function calculateTotal() {
-    let total = 0;
-    $("#orderTable > tr").each(function () {
-        let price = $(this).find("td:nth-child(4)").text();
-        let qty = $(this).find("td:nth-child(5)").text();
-        total += parseFloat(price) * parseInt(qty);
-    });
-    $("#total").text(total.toFixed(2));
-    $("#subtotal").text(total.toFixed(2));
-}
-
-//add item to the table
-$("#btnAddToTable").click(function () {
-    let itemCode = $("#txtItemCode").val();
-    let itemDescription = $("#txtItemDescription").val();
-    let itemPrice = $("#txtItemPrice").val();
-    let itemQty = $("#txtQty").val();
-
-    let total = itemPrice * itemQty;
-
-    let row = `<tr><td>${itemCode}</td><td>${itemDescription}</td><td>${itemPrice}</td><td>${itemQty}</td><td>${total}</td></tr>`;
-    $("#orderTable").append(row);
-    calculateTotal();
-});
-
-//calculate balance
-$("#txtCash").keyup(function () {
-    let cash = parseFloat($("#txtCash").val());
-    let total = parseFloat($("#total").text());
-    let balance = cash - total;
-    $("#txtBalance").val(balance.toFixed(2));
-});
-
-//submit order
-$("#btnSubmitOrder").click(function () {
-    let orderID = $("#txtOrderID").val();
-    let orderDate = $("#txtDate").val();
-    let customerID = $("#orderCustomerID").val();
-    let orderTotal = $("#total").text();
-    let orderDiscount = $("#txtDiscount").val();
-    let orderNetTotal = $("#subtotal").text();
-    let orderPaid = $("#txtCash").val();
-    let orderBalance = $("#txtBalance").val();
-
-    let orderDetails = [];
-    $("#orderTable > tr").each(function () {
-        let itemCode = $(this).find("td:nth-child(1)").text();
-        let itemQty = $(this).find("td:nth-child(4)").text();
-        let itemPrice = $(this).find("td:nth-child(3)").text();
-        let orderDetail = {
-            orderID: orderID,
-            itemCode: itemCode,
-            qty: itemQty,
-            unitPrice: itemPrice
-        };
-        orderDetails.push(orderDetail);
-    });
-
-    let order = {
-        orderID: orderID,
-        orderDate: orderDate,
-        customerID: customerID,
-        orderTotal: orderTotal,
-        orderDiscount: orderDiscount,
-        orderNetTotal: orderNetTotal,
-        orderPaid: orderPaid,
-        orderBalance: orderBalance,
-        orderDetails: orderDetails
-    };
-
-    $.ajax({
-        url: 'http://localhost:8080/Back_End_Web_exploded/order',
-        method: 'post',
-        data: JSON.stringify(order),
-        contentType: 'application/json',
-        success: function (resp) {
-            alert(resp.message);
-        },
-        error: function (error) {
-            console.log(error);
-        }
-    });
-});
-
-//clear all
-$("#btn-clear").click(function () {
-    $("#txtItemCode").val("");
-    $("#txtItemDescription").val("");
-    $("#txtItemPrice").val("");
-    $("#txtQTYOnHand").val("");
-    $("#txtQty").val("");
-});
-
-$("#btn-clear1").click(function () {
-    $("#txtCustomerID").val("");
-    $("#txtCustomerName").val("");
-    $("#txtCustomerAddress").val("");
-    $("#txtCustomerSalary").val("");
-});
-
-
-
-</script>
-
 
 </body>
 </html>
