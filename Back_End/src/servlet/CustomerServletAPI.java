@@ -33,14 +33,14 @@ public class CustomerServletAPI extends HttpServlet {
                     ResultSet rst = pstm.executeQuery();
 
                     if (rst.next()) {
-                        String id = rst.getString(1);
-                        String name = rst.getString(2);
-                        String address = rst.getString(3);
+                        String cus_id = rst.getString(1);
+                        String cus_name = rst.getString(2);
+                        String cus_address = rst.getString(3);
 
                         JsonObjectBuilder customerObject = Json.createObjectBuilder();
-                        customerObject.add("id", id);
-                        customerObject.add("name", name);
-                        customerObject.add("address", address);
+                        customerObject.add("cus_id", cus_id);
+                        customerObject.add("cus_name", cus_name);
+                        customerObject.add("cus_address", cus_address);
 
                         resp.getWriter().print(customerObject.build());
 
@@ -65,6 +65,7 @@ public class CustomerServletAPI extends HttpServlet {
                     }
 
                     resp.getWriter().print(allCustomers.build());
+                    break;
             }
 
 

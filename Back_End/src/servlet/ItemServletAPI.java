@@ -31,14 +31,14 @@ public class ItemServletAPI extends HttpServlet {
 
                 if (rst.next()) {
                     String itemCode = rst.getString(1);
-                    String itemName = rst.getString(2);
-                    int qtyOnHand = rst.getInt(3);
+                    String description = rst.getString(2);
+                    int qty = rst.getInt(3);
                     double unitPrice = rst.getDouble(4);
 
                     JsonObjectBuilder itemObject = Json.createObjectBuilder();
                     itemObject.add("itemCode", itemCode);
-                    itemObject.add("itemName", itemName);
-                    itemObject.add("qtyOnHand", qtyOnHand);
+                    itemObject.add("description", description);
+                    itemObject.add("qty", qty);
                     itemObject.add("unitPrice", unitPrice);
 
                     resp.getWriter().print(itemObject.build());
