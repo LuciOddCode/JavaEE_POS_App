@@ -490,10 +490,12 @@ function getAllCustomers() {
         method: "get",
         /*dataType: "formdata",*/
         success: function (customers) {
-            for (let i in customers) {
-                let id = customers[i].cus_id;
-                let name = customers[i].cus_name;
-                let address = customers[i].cus_address;
+
+            let cus = JSON.parse(customers);
+            for (let i=0;i<cus.length;i++) {
+                let id = cus[i].id;
+                let name = cus[i].name;
+                let address = cus[i].address;
                 let row = `<tr><td>${id}</td><td>${name}</td><td>${address}</td></tr>`;
                 $("#tblCustomer").append(row);
             }
