@@ -486,7 +486,8 @@ function getAllCustomers() {
     $("#tblCustomer").empty();
     <!--send ajax request to the customer servlet using jQuery-->
     $.ajax({
-        url: 'customer',
+        url: 'http://localhost:8080/Back_End_Web_exploded/customer',
+        method: "get",
         dataType: "json",
         success: function (customers) {
             for (let i in customers) {
@@ -508,7 +509,7 @@ $("#btnCustomer").click(function () {
 
     let formdata = $("#customerForm").serialize();
     $.ajax({
-        url: "customer",
+        url: "http://localhost:8080/Back_End_Web_exploded/customer",
         method: "post",
         data: formdata,
         success: function (res) {
@@ -527,7 +528,7 @@ $("#btnCustomer").click(function () {
 $("#btnCusDelete").click(function () {
     let formData = $("#txtCustomerID").val();
     $.ajax({
-        url: "customer?cusID=" + formData,
+        url: "http://localhost:8080/Back_End_Web_exploded/customer?cusID=" + formData,
         method: 'DELETE',
         success: function (resp) {
             console.log(resp);
@@ -556,7 +557,7 @@ let click = $("#btnUpdate").click(function () {
 
 
     $.ajax({
-        url: 'customer',
+        url: 'http://localhost:8080/Back_End_Web_exploded/customer',
         method: 'put',
         data: JSON.stringify(customer),
         contentType: 'application/json',
@@ -716,7 +717,7 @@ function loadAllItems() {
 $("#selectCusID").change(function () {
     let cusID = $("#selectCusID").val();
     $.ajax({
-        url: 'customer?cusID=' + cusID,
+        url: 'http://localhost:8080/Back_End_Web_exploded/customer?cusID=' + cusID,
         method: 'get',
         dataType: 'json',
         success: function (customer) {
@@ -731,7 +732,7 @@ $("#selectCusID").change(function () {
 $("#selectItemCode").change(function () {
     let itemCode = $("#selectItemCode").val();
     $.ajax({
-        url: 'item?code=' + itemCode,
+        url: 'http://localhost:8080/Back_End_Web_exploded/item?code=' + itemCode,
         method: 'get',
         dataType: 'json',
         success: function (item) {
