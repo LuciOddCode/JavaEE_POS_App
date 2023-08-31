@@ -12,19 +12,15 @@ function getAllCustomers() {
     $.ajax({
         url: 'http://localhost:8080/Back_End_Web_exploded/customer?option=getAll',
         method: "get",
+        dataType: "json",
         success: function (customers) {
-
-            let cus = JSON.parse(customers);
-            for (let i=0;i<cus.length;i++) {
-                let id = cus[i].id;
-                let name = cus[i].name;
-                let address = cus[i].address;
-                let row = `<tr><td>${id}</td><td>${name}</td><td>${address}</td></tr>`;
+            for (let customer of customers) {
+                let row = "<tr><td>" + customer.id + "</td><td>" + customer.name + "</td><td>" + customer.address + "</td></tr>";
                 $("#tblCustomer").append(row);
             }
         },
         error: function (error) {
-            alert(error);
+            console.log(error.responseJSON);
         }
     });
 }
@@ -54,19 +50,20 @@ $("#btnCusDelete").click(function () {
     $.ajax({
         url: "http://localhost:8080/Back_End_Web_exploded/customer?cusID=" + formData,
         method: 'DELETE',
+        dataType: 'json',
         success: function (resp) {
             console.log(resp);
             alert(resp.message);
             getAllCustomers();
         },
         error: function (error) {
-            console.log(error.responseJSON);
-            alert(error.responseJSON.message);
+            console.log(error);
+            alert(error.message);
         }
     });
 });
 
-let clickd = $("#btnUpdate").click(function () {
+ $("#btnUpdate").click(function () {
     /*   let customer = "{\"cusID\":\"" + $("#txtCustomerID").val() + "\",\"cusName\":\"" + $("#txtCustomerName").val()
            + "\",\"cusAddress\":\"" + $("#txtCustomerAddress").val() + "\"} ";*/
     let cusId = $("#txtCustomerID").val();
@@ -84,7 +81,7 @@ let clickd = $("#btnUpdate").click(function () {
         url: 'http://localhost:8080/Back_End_Web_exploded/customer',
         method: 'put',
         data: JSON.stringify(customer),
-        contentType: 'application/json',
+        contentType: 'json',
         success: function (resp) {
             console.log(resp);
             alert(resp.message);

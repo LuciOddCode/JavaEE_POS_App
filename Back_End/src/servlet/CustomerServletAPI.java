@@ -13,10 +13,15 @@ import java.sql.*;
 @WebServlet(urlPatterns = {"/customer"})
 public class CustomerServletAPI extends HttpServlet {
 
+    public CustomerServletAPI(){
+        
+    }
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.addHeader("Access-Control-Allow-Origin","*");
-        
+        resp.addHeader("Content-Type","application/json");
+
         try {
             Class.forName("com.mysql.jdbc.Driver");
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/web_pos", "root", "1234");
@@ -64,17 +69,21 @@ public class CustomerServletAPI extends HttpServlet {
                         customerObject.add("address", address);
                         allCustomers.add(customerObject.build());
                     }
-
-                    resp.getWriter().print(allCustomers.build());
+                    resp.getWriter().print(allCustomers.build().toString());
                     break;
+                default:
+                    resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
             }
-
-
 
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            JsonObjectBuilder response = Json.createObjectBuilder();
+            response.add("state", "Error");
+            response.add("message", e.getMessage());
+            response.add("data", "");
+            resp.setStatus(400);
+            resp.getWriter().print(response.build());
         }
 
     }
@@ -83,9 +92,9 @@ public class CustomerServletAPI extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.addHeader("Access-Control-Allow-Origin","*");
 
-        String cusID = req.getParameter("cusID");
-        String cusName = req.getParameter("cusName");
-        String cusAddress = req.getParameter("cusAddress");
+        String cusID = req.getParameter("cus_id");
+        String cusName = req.getParameter("cus_name");
+        String cusAddress = req.getParameter("cus_address");
         System.out.println(cusID + cusName + cusAddress);
         try {
             Class.forName("com.mysql.jdbc.Driver");
@@ -205,17 +214,17 @@ public class CustomerServletAPI extends HttpServlet {
         String cusID = req.getParameter("cusID");
         resp.addHeader("Content-Type", "application/json");
         System.out.println(cusID);
+
         try {
             Class.forName("com.mysql.jdbc.Driver");
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/web_pos", "root", "1234");
 
             PreparedStatement pstm2 = connection.prepareStatement("delete from customer where cus_id=?");
-
             pstm2.setObject(1, cusID);
+
             if (pstm2.executeUpdate() > 0) {
                 JsonObjectBuilder response = Json.createObjectBuilder();
-                response.add("message", "Customer Delete");
-                resp.getWriter().println("Customer Deleted..!");
+                response.add("message", "Customer Deleted");
                 resp.getWriter().print(response.build());
             }
         } catch (SQLException ex) {
@@ -223,12 +232,13 @@ public class CustomerServletAPI extends HttpServlet {
         } catch (ClassNotFoundException e) {
             JsonObjectBuilder response = Json.createObjectBuilder();
             response.add("state", "Error");
-            response.add("message", e.getMessage());
+            response.add("message", "Class not found: " + e.getMessage());
             response.add("data", "");
             resp.setStatus(400);
             resp.getWriter().print(response.build());
         }
     }
+
 
     @Override
     protected void doOptions(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

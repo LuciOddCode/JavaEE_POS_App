@@ -86,7 +86,7 @@ public class ItemServletAPI extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.addHeader("Access-Control-Allow-Origin","*");
 
-        String code = req.getParameter("code");
+        int code = Integer.parseInt(req.getParameter("code"));
         String itemName = req.getParameter("description");
         String qty = req.getParameter("qty");
         String unitPrice = req.getParameter("unitPrice");

@@ -89,7 +89,9 @@ public class PlaceOrderServletAPI extends HttpServlet {
                         response.add("state", "Ok");
                         response.add("message", "Successfully Added.!");
                         response.add("data", "");
+                        connection.setAutoCommit(true);
                         connection.commit();
+
                         resp.getWriter().print(response.build());
                     }else {
                         JsonObjectBuilder response = Json.createObjectBuilder();
@@ -98,6 +100,8 @@ public class PlaceOrderServletAPI extends HttpServlet {
                         response.add("data", "");
                         resp.getWriter().print(response.build());
                         connection.rollback();
+                        connection.setAutoCommit(true);
+
                     }
 
                 }else {
@@ -107,6 +111,7 @@ public class PlaceOrderServletAPI extends HttpServlet {
                     response.add("data", "");
                     resp.getWriter().print(response.build());
                     connection.rollback();
+                    connection.setAutoCommit(true);
 
                 }
             }else {
@@ -116,7 +121,8 @@ public class PlaceOrderServletAPI extends HttpServlet {
                 response.add("data", "");
                 resp.getWriter().print(response.build());
                 connection.rollback();
-                
+                connection.setAutoCommit(true);
+
             }
 
 
