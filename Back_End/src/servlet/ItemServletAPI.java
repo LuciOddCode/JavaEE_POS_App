@@ -1,8 +1,6 @@
 package servlet;
 
-import javax.json.Json;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObjectBuilder;
+import javax.json.*;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -112,7 +110,12 @@ public class ItemServletAPI extends HttpServlet {
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            JsonObjectBuilder response = Json.createObjectBuilder();
+            response.add("state", "Error");
+            response.add("message", e.getMessage());
+            response.add("data", "");
+            resp.setStatus(400);
+            resp.getWriter().print(response.build());
         }
     }
 
@@ -126,6 +129,10 @@ public class ItemServletAPI extends HttpServlet {
         String unitPrice = req.getParameter("unitPrice");
         String option = req.getParameter("option");
 
+
+        JsonReader reader = Json.createReader(req.getReader());
+        JsonObject jsonObject = reader.readObject();
+
         try {
             Class.forName("com.mysql.jdbc.Driver");
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/web_pos", "root", "1234");
@@ -135,7 +142,6 @@ public class ItemServletAPI extends HttpServlet {
             pstm3.setObject(2, qty);
             pstm3.setObject(3, unitPrice);
             pstm3.setObject(4, code);
-            resp.addHeader("Content-Type", "application/json");
 
             if (pstm3.executeUpdate() > 0) {
                 JsonObjectBuilder response = Json.createObjectBuilder();
@@ -164,10 +170,8 @@ public class ItemServletAPI extends HttpServlet {
         resp.addHeader("Access-Control-Allow-Origin","*");
 
         String code = req.getParameter("code");
-        String itemName = req.getParameter("description");
-        String qty = req.getParameter("qty");
-        String unitPrice = req.getParameter("unitPrice");
-        String option = req.getParameter("option");
+        resp.addHeader("Content-Type", "application/json");
+        System.out.println(code);
 
         try {
             Class.forName("com.mysql.jdbc.Driver");
