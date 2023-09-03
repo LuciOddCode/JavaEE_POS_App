@@ -9,23 +9,19 @@ function getAllItems() {
     $("#tblItem").empty();
     $.ajax({
         url: 'http://localhost:8080/Back_End_Web_exploded/item',
+        method: "get",
+        dataType: "json",
         success: function (items) {
-            let item = JSON.parse(items);
-            for (let i=0;i<item[i].length;i++) {
-                let code = item[i].itemCode;
-                let description = item[i].description;
-                let unit_price = item[i].unitPrice;
-                let qty = item.qty;
-                let row = `<tr><td>${code}</td><td>${description}</td><td>${unit_price}</td><td>${qty}</td></tr>`;
+            for (let item of items) {
+                let row = "<tr><td>" + item.code+ "</td><td>" + item.description + "</td><td>" + item.unitPrice  + "</td><td>" + item.qty+ "</td></tr>";
                 $("#tblItem").append(row);
             }
         },
         error: function (error) {
-            console.log(error);
+            console.log(error.responseJSON);
         }
     });
 }
-
 
 
 $("#btnItem").click(function () {
@@ -37,15 +33,15 @@ $("#btnItem").click(function () {
         method: "post",
         data: formdata,
         success: function (res) {
-            console.log(res);
             alert(res.message);
-            getAllCustomers();
+            getAllItems();
         },
         error: function (error) {
             console.log(error.responseJSON);
             alert(error.responseJSON.message);
         }
     });
+
 
 });
 
@@ -54,10 +50,11 @@ $("#btnItemDelete").click(function () {
     $.ajax({
         url: "http://localhost:8080/Back_End_Web_exploded/item?code=" + formData,
         method: 'DELETE',
+        dataType: 'json',
         success: function (resp) {
             console.log(resp);
             alert(resp.message);
-            getAllCustomers();
+            getAllItems();
         },
         error: function (error) {
             console.log(error.responseJSON);
@@ -85,7 +82,7 @@ let click = $("#btnItemUpdate").click(function () {
         url: 'http://localhost:8080/Back_End_Web_exploded/item',
         method: 'put',
         data: JSON.stringify(item),
-        contentType: 'application/json',
+        contentType: 'json',
         success: function (resp) {
             console.log(resp);
             alert(resp.message);
